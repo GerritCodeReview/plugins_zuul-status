@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "b28770db_f2f31f73",
+        "filename": ".gitignore",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1029953
+      },
+      "writtenOn": "2019-01-30T00:53:27Z",
+      "side": 1,
+      "message": "Thanks, done.",
+      "parentUuid": "533b34ec_e5dc5826",
+      "revId": "2ecbae881ecdb67a101907a14cf1b2b23781fad8",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "86141048_00f0ef4b",
         "filename": "src/main/java/com/googlesource/gerrit/plugins/zuulstatus/Module.java",
         "patchSetId": 1
@@ -33,6 +51,24 @@
       "revId": "2ecbae881ecdb67a101907a14cf1b2b23781fad8",
       "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "023638a2_46195656",
+        "filename": "src/main/java/com/googlesource/gerrit/plugins/zuulstatus/Module.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1029953
+      },
+      "writtenOn": "2019-01-30T00:53:27Z",
+      "side": 1,
+      "message": "Thanks, done. I\u0027ve ran glf on this project now and this is the only line it touches.",
+      "parentUuid": "86141048_00f0ef4b",
+      "revId": "2ecbae881ecdb67a101907a14cf1b2b23781fad8",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153",
+      "unresolved": false
     }
   ]
 }
