@@ -102,7 +102,6 @@
     async _update() {
       try {
         const response = await this.getZuulStatus(this.change, this.revision);
-        console.log(response);
         this._response = response;
         this._updateIntervalMs = DEFAULT_UPDATE_INTERVAL_MS;
       } catch (err) {
