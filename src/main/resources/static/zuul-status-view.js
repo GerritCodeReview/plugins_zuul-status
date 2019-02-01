@@ -17,8 +17,8 @@
  (function() {
   'use strict';
 
-  const DEFAULT_UPDATE_INTERVAL_MS = 1000 * 1;
-  const MAX_UPDATE_INTERVAL_MS = 1000 * 30 * 1;
+  const DEFAULT_UPDATE_INTERVAL_MS = 1000 * 2;
+  const MAX_UPDATE_INTERVAL_MS = 1000 * 30 * 2;
 
   Polymer({
     is: 'zuul-status-view',
