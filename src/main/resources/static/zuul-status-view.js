@@ -17,6 +17,48 @@
  (function() {
   'use strict';
 
+  /**
+   * Wrapper around localStorage to prevent using it if you have it disabled.
+   *
+   * Temporary until https://gerrit-review.googlesource.com/c/gerrit/+/211472 is merged.
+   *
+   */
+  class ZuulSiteBasedStorage {
+    // Returns the local storage.
+    _storage() {
+      try {
+        return window.localStorage;
+      } catch (err) {
+        console.error('localStorage is disabled with this error ' + err);
+        return null;
+      }
+    }
+
+    getItem(key) {
+      if (this._storage() !== null) {
+        return this._storage().getItem(key);
+      }
+    }
+
+    setItem(key, value) {
+      if (this._storage() !== null) {
+        this._storage().setItem(key, value);
+      }
+    }
+
+    removeItem(key) {
+      if (this._storage() !== null) {
+        this._storage().removeItem(key);
+      }
+    }
+
+    clear() {
+      if (this._storage() === null) {
+        this._storage().clear();
+      }
+    }
+  }
+
   const DEFAULT_UPDATE_INTERVAL_MS = 1000 * 2;
   const MAX_UPDATE_INTERVAL_MS = 1000 * 30 * 2;
 
@@ -43,6 +85,10 @@
       // used to determine how long we've been trying to update.
       _startTime: Date,
       _updateTimeoutID: Number,
+      _storage: {
+        type: Object,
+        value: new SiteBasedStorage(),
+      },
     },
 
     attached() {
@@ -264,6 +310,22 @@
       }
 
       return className;
+    },
+
+    _handleDisableZuulStatus(e) {
+      this._storage.setItem('disable_zuul', 'yes');
+    },
+
+    _handleEnableZuulStatus(e) {
+      this._storage.removeItem('disable_zuul');
+    },
+
+    _getZuulDisableStorage(storage) {
+      if (storage.getItem('disable_zuul')) {
+        return true;
+      }
+
+      return false;
     },
   });
 })();
