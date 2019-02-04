@@ -139,50 +139,60 @@ limitations under the License.
           <div class="container">
             <h3 class="labelName">[[_computeTitle(_response)]]</h3>
           </div>
+          <div class="container">
+            <template is="dom-if" if="[[!zuulDisable]]" restamp="true">
+              <gr-button link on-tap="_handleDisableZuulStatus">Disable Zuul Status</gr-button>
+            </template>
+            <template is="dom-if" if="[[zuulDisable]]" restamp="true">
+              <gr-button link on-tap="_handleEnableZuulStatus">Enable Zuul Status</gr-button>
+            </template>
+          </div>
         </div>
-        <div class="bottom container">
-          <table id="list" class="genericList">
-            <tr class="headerRow">
-              <th class="pipeline topHeader">Pipeline</th>
-              <th class="jobName topHeader">Job Name</th>
-              <th class="progressName topHeader">Progress</th>
-            </tr>
-            <tbody>
-              <template is="dom-repeat" items=[[_response]] as="response">
-                <template is="dom-repeat" items=[[response.jobs]] as="jobs">
-                  <tr class="table">
-                    <td class="pipeline">
-                      [[jobs.pipeline]]
-                    </td>
-                    <td class="jobName">
-                      <a href="[[_computeReportURL(jobs)]]" target="_blank"
-                         hidden$="[[!jobs.name]]">
-                        [[jobs.name]]
-                      </a>
-                    </td>
-                    <td class="progressName">
-                      <template is="dom-if" if="[[_getResults(jobs, 'true', 'in progress')]]">
-                        <div class="progress zuul-job-result">
-                          <div class="progress-bar"
-                            id="progressBar"
-                            role="progressbar"
-                            aria-valuenow$="[[_progressPercent(jobs)]]"
-                            aria-valuemin="0"
-                            aria-valuemax="100"></div>
-                        </div>
-                      </template>
-                      <template is="dom-if" if="[[!_getResults(jobs, 'true', 'in progress')]]">
-                        <span class$="zuul-job-result label [[_renderJobStatusLabel(jobs)]]">
-                          [[_getResults(jobs)]]
-                        </span>
-                      </template>
-                    </td>
-                  </tr>
+        <template is="dom-if" if="[[!zuulDisable]]" restamp="true">
+          <div class="bottom container">
+            <table id="list" class="genericList">
+              <tr class="headerRow">
+                <th class="pipeline topHeader">Pipeline</th>
+                <th class="jobName topHeader">Job Name</th>
+                <th class="progressName topHeader">Progress</th>
+              </tr>
+              <tbody>
+                <template is="dom-repeat" items=[[_response]] as="response">
+                  <template is="dom-repeat" items=[[response.jobs]] as="jobs">
+                    <tr class="table">
+                      <td class="pipeline">
+                        [[jobs.pipeline]]
+                      </td>
+                      <td class="jobName">
+                        <a href="[[_computeReportURL(jobs)]]" target="_blank"
+                           hidden$="[[!jobs.name]]">
+                          [[jobs.name]]
+                        </a>
+                      </td>
+                      <td class="progressName">
+                        <template is="dom-if" if="[[_getResults(jobs, 'true', 'in progress')]]">
+                          <div class="progress zuul-job-result">
+                            <div class="progress-bar"
+                              id="progressBar"
+                              role="progressbar"
+                              aria-valuenow$="[[_progressPercent(jobs)]]"
+                              aria-valuemin="0"
+                              aria-valuemax="100"></div>
+                          </div>
+                        </template>
+                        <template is="dom-if" if="[[!_getResults(jobs, 'true', 'in progress')]]">
+                          <span class$="zuul-job-result label [[_renderJobStatusLabel(jobs)]]">
+                            [[_getResults(jobs)]]
+                          </span>
+                        </template>
+                      </td>
+                    </tr>
+                  </template>
                 </template>
-              </template>
-            </tbody>
-          </table>
-        </div>
+              </tbody>
+            </table>
+          </div>
+        </template>
       </div>
     </template>
   </template>

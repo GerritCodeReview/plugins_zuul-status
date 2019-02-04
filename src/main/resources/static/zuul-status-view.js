@@ -17,6 +17,44 @@
  (function() {
   'use strict';
 
+  /**
+   * Wrapper around localStorage to prevent using it if you have it disabled.
+   *
+   * Temporary until https://gerrit-review.googlesource.com/c/gerrit/+/211472 is merged.
+   *
+   */
+  class ZuulSiteBasedStorage {
+    // Returns the local storage.
+    _storage() {
+      try {
+        return window.localStorage;
+      } catch (err) {
+        console.error('localStorage is disabled with this error ' + err);
+        return null;
+      }
+    }
+
+    getItem(key) {
+      if (this._storage() === null) { return null; }
+      return this._storage().getItem(key);
+    }
+
+    setItem(key, value) {
+      if (this._storage() === null) { return null; }
+      return this._storage().setItem(key, value);
+    }
+
+    removeItem(key) {
+      if (this._storage() === null) { return null; }
+      return this._storage().removeItem(key);
+    }
+
+    clear() {
+      if (this._storage() === null) { return null; }
+      return this._storage().clear();
+    }
+  }
+
   const DEFAULT_UPDATE_INTERVAL_MS = 1000 * 2;
   const MAX_UPDATE_INTERVAL_MS = 1000 * 30 * 2;
 
@@ -43,6 +81,14 @@
       // used to determine how long we've been trying to update.
       _startTime: Date,
       _updateTimeoutID: Number,
+      _storage: {
+        type: Object,
+        value: new ZuulSiteBasedStorage(),
+      },
+      zuulDisable: {
+        type: Boolean,
+        value: false,
+      }
     },
 
     attached() {
@@ -65,6 +111,12 @@
     async reload() {
       this._response = null;
       this._startTime = new Date();
+
+      if (this._storage.getItem('disable_zuul_status')) {
+        this.set('zuulDisable', true);
+      } else {
+        this.set('zuulDisable', false);
+      }
 
       const config = await this.getConfig();
       if (config && config.zuul_url) {
@@ -264,6 +316,18 @@
       }
 
       return className;
+    },
+
+    _handleDisableZuulStatus(e) {
+      this._storage.setItem('disable_zuul_status', 'yes');
+
+      this.reload();
+    },
+
+    _handleEnableZuulStatus(e) {
+      this._storage.removeItem('disable_zuul_status');
+
+      this.reload();
     },
   });
 })();
