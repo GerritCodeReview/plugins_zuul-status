@@ -16,28 +16,38 @@ package com.googlesource.gerrit.plugins.zuulstatus;
 
 import com.google.gerrit.extensions.annotations.PluginName;
 import com.google.gerrit.extensions.restapi.RestReadView;
-import com.google.gerrit.server.config.ConfigResource;
 import com.google.gerrit.server.config.PluginConfig;
 import com.google.gerrit.server.config.PluginConfigFactory;
+import com.google.gerrit.server.project.NoSuchProjectException;
+import com.google.gerrit.server.project.ProjectResource;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
-public class GetConfig implements RestReadView<ConfigResource> {
+@Singleton
+public class GetConfig implements RestReadView<ProjectResource> {
 
-  private final PluginConfig cfg;
+  private final PluginConfigFactory config;
+  private final String pluginName;
 
   @Inject
   public GetConfig(PluginConfigFactory cfgFactory, @PluginName String pluginName) {
-    this.cfg = cfgFactory.getFromGerritConfig(pluginName);
+    this.config = cfgFactory;
+    this.pluginName = pluginName;
   }
 
   @Override
-  public ConfigInfo apply(ConfigResource resource) {
+  public ConfigInfo apply(ProjectResource project) throws NoSuchProjectException {
+    PluginConfig cfg = config.getFromProjectConfigWithInheritance(
+        project.getNameKey(), pluginName);
+
     ConfigInfo info = new ConfigInfo();
-    info.zuulUrl = cfg.getString("zuulUrl", null);
+    info.zuulUrl = cfg.getString("url", null);
+    info.zuulTenant = cfg.getString("tenant", null);
     return info;
   }
 
   public static class ConfigInfo {
     String zuulUrl;
+    String zuulTenant;
   }
 }
