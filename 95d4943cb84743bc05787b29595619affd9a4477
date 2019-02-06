@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e9c88e4d_a2a57a4e",
+        "filename": "src/main/java/com/googlesource/gerrit/plugins/zuulstatus/GetConfig.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1029953
+      },
+      "writtenOn": "2019-02-06T16:47:19Z",
+      "side": 1,
+      "message": "Is it possible to support getting the config from gerrit.config?\n\nI\u0027ve set:\n\n[plugin \"zuul-status\"]\n    url \u003d https://gerrit-zuul.wmflabs.org/zuul/status/change/\n\nbut the dom stays hidden because it cannot find the config.",
+      "revId": "95d4943cb84743bc05787b29595619affd9a4477",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153",
+      "unresolved": true
+    }
+  ]
+}
