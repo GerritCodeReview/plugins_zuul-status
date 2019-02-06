@@ -75,6 +75,30 @@
       "revId": "95d4943cb84743bc05787b29595619affd9a4477",
       "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3bb3b05c_c51a4150",
+        "filename": "src/main/resources/static/zuul-status-view.js",
+        "patchSetId": 2
+      },
+      "lineNbr": 127,
+      "author": {
+        "id": 1012247
+      },
+      "writtenOn": "2019-02-06T17:06:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ad4ed730_1b1556ef",
+      "range": {
+        "startLine": 127,
+        "startChar": 10,
+        "endLine": 127,
+        "endChar": 41
+      },
+      "revId": "95d4943cb84743bc05787b29595619affd9a4477",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153",
+      "unresolved": false
     }
   ]
 }
