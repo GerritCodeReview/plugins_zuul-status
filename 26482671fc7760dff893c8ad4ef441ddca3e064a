@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9696c470_fbf2b20e",
+        "filename": "src/main/java/com/googlesource/gerrit/plugins/zuulstatus/Module.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1012247
+      },
+      "writtenOn": "2019-02-06T14:52:55Z",
+      "side": 1,
+      "message": "This works when accessing the project\u0027s config page over the GWT UI. It seems that PolyGerrit doesn\u0027t currently offer that functionality, at least on the stable-2.16 branch where I tried this.\n\nJust FYI and to explain why the TODO.",
+      "range": {
+        "startLine": 34,
+        "startChar": 1,
+        "endLine": 41,
+        "endChar": 92
+      },
+      "revId": "26482671fc7760dff893c8ad4ef441ddca3e064a",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153",
+      "unresolved": false
+    }
+  ]
+}
