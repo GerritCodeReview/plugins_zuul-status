@@ -268,9 +268,19 @@
      * @return {String} True when we are done requesting results.
      */
     _computeReportURL(response) {
-      if (!response || !response.report_url) { return ''; }
 
-      return response.report_url;
+      if (this.zuulTenant) {
+        // Zuul v3 live streaming URL has to be checked early because `report_url` always contains at least a placeholder
+        if (response && response.result == null && response.url && response.url.startsWith('stream/')) {
+          return `${this.zuulUrl}/t/${this.zuulTenant}/${response.url}`;
+        }
+      }
+
+      if (response && response.report_url) {
+        return response.report_url;
+      }
+
+      return '';
     },
 
     _progressPercent(jobs) {
