@@ -16,6 +16,24 @@
       "revId": "95d4943cb84743bc05787b29595619affd9a4477",
       "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "abb8093e_251038ab",
+        "filename": "src/main/java/com/googlesource/gerrit/plugins/zuulstatus/GetConfig.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1012247
+      },
+      "writtenOn": "2019-02-06T16:52:54Z",
+      "side": 1,
+      "message": "\u003e Is it possible to support getting the config from gerrit.config?\n\nThat would complicate the code, IMHO quite needlessly. What is your use case for this? If it\u0027s \"backward compatibility\", then I think I explained this in the commit message already.\n\nI believe that both locations are equally secure. There\u0027s also always exactly one top-level project, so you can emulate the original way of configuration by \"just\" moving it to All-Projects.git. I apologize for this churn, but I cannot do it in an easier manner :(.",
+      "parentUuid": "e9c88e4d_a2a57a4e",
+      "revId": "95d4943cb84743bc05787b29595619affd9a4477",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153",
+      "unresolved": false
     }
   ]
 }
