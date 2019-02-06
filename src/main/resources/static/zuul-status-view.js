@@ -62,6 +62,10 @@
     is: 'zuul-status-view',
     properties: {
       zuulUrl: String,
+      zuulTenant: {
+        type: String,
+        value: null,
+      },
       plugin: Object,
       change: Object,
       revision: {
@@ -118,12 +122,19 @@
         this.set('zuulDisable', false);
       }
 
-      const config = await this.getConfig();
+      const project = this.change.project;
+      const plugin = this.plugin.getPluginName();
+      const config = await this.getConfig(project, plugin);
       if (config && config.zuul_url) {
         this.zuulUrl = config.zuul_url;
+        if (config.zuul_tenant) {
+          this.zuulTenant = config.zuul_tenant;
+          console.info(`zuul-status: Zuul v3 at ${this.zuulUrl}, tenant ${this.zuulTenant}`);
+        } else {
+          console.info(`zuul-status: Zuul v2 at ${this.zuulUrl}`);
+        }
       } else {
-        console.info("No config found for plugin zuul-status at endpoint " +
-            "/config/server/info");
+        console.info("No config found for plugin zuul-status");
       }
       if (this.zuulUrl) {
         await this._update();
@@ -136,8 +147,10 @@
      * @return {Promise} Resolves to the fetched config object,
      *     or rejects if the response is non-OK.
      */
-    async getConfig() {
-      return await this.plugin.restApi().get('/config/server/config');
+    async getConfig(project, plugin) {
+      return await this.plugin.restApi().get(
+              `/projects/${encodeURIComponent(project)}` +
+              `/${encodeURIComponent(plugin)}~config`);
     },
 
     /**
@@ -191,10 +204,10 @@
      * @return {Promise} Resolves to a fetch Response object.
      */
     async _getReponse(change, revision) {
-      const url = `${this.zuulUrl}${change._number},${revision._number}`
+      const url = this.zuulTenant === null ?
+        `${this.zuulUrl}${change._number},${revision._number}` :
+        `${this.zuulUrl}/api/tenant/${this.zuulTenant}/status/change/${change._number},${revision._number}`;
       const options = {method: 'GET'};
-      options.headers = new Headers();
-      options.headers.set('Content-Type', 'application/json');
 
       return await fetch(url, options);
     },
