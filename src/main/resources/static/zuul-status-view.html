@@ -14,6 +14,7 @@ limitations under the License.
 
 <dom-module id="zuul-status-view">
   <template>
+    <style include="shared-styles"></style>
     <style>
       #view-container {
         display: block;
@@ -69,33 +70,6 @@ limitations under the License.
       #progressBar {
         width: var(--progress-bar-width, 0%);
       }
-      .genericList th {
-        white-space: nowrap;
-      }
-      .genericList th,
-      .genericList td {
-        padding-right: 1rem;
-      }
-      .genericList tr th:first-of-type,
-      .genericList tr td:first-of-type {
-        padding-left: 1rem;
-      }
-      .genericList td {
-        flex-shrink: 0;
-      }
-      .genericList .topHeader {
-        color: var(--primary-text-color);
-        font-weight: var(--font-weight-bold);
-        text-align: left;
-        vertical-align: middle
-      }
-      .genericList a {
-        color: var(--primary-text-color);
-        text-decoration: none;
-      }
-      .genericList a:hover {
-        text-decoration: underline;
-      }
       #list {
         padding-bottom: 1em;
       }
@@ -132,7 +106,37 @@ limitations under the License.
       .label-warning {
         background-color: #f0ad4e;
       }
+      a {
+        color: var(--primary-text-color);
+        cursor: pointer;
+        display: inline-block;
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
     </style>
+    <style include="gr-change-list-styles">
+      #changeList {
+        border-collapse: collapse;
+        width: 100%;
+      }
+      .leftPadding {
+        padding: 0.5em;
+      }
+    </style>
+    <iron-iconset-svg name="zuul-icons" size="24">
+      <svg>
+        <defs>
+          <!-- This SVG is a copy from iron-icons https://github.com/PolymerElements/iron-icons/blob/master/iron-icons.js -->
+          <g id="code"><path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"></path></g>
+          <!-- This SVG is a copy from iron-icons https://github.com/PolymerElements/iron-icons/blob/master/iron-icons.js -->
+          <g id="query-builder"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"></path></g>
+          <!-- This SVG is a copy from iron-icons https://github.com/PolymerElements/iron-icons/blob/master/iron-icons.js -->
+          <g id="today"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"></path></g>
+        </defs>
+      </svg>
+    </iron-iconset-svg>
     <template is="dom-if" if="[[zuulUrl]]">
       <div id="view-container">
         <div class="header container">
@@ -150,46 +154,61 @@ limitations under the License.
         </div>
         <template is="dom-if" if="[[!zuulDisable]]" restamp="true">
           <div class="bottom container">
-            <table id="list" class="genericList">
-              <tr class="headerRow">
-                <th class="pipeline topHeader">Pipeline</th>
-                <th class="jobName topHeader">Job Name</th>
-                <th class="progressName topHeader">Progress</th>
-              </tr>
-              <tbody>
-                <template is="dom-repeat" items=[[_response]] as="response">
-                  <template is="dom-repeat" items=[[response.jobs]] as="jobs">
-                    <tr class="table">
-                      <td class="pipeline">
-                        [[jobs.pipeline]]
-                      </td>
-                      <td class="jobName">
-                        <a href="[[_computeReportURL(jobs)]]" target="_blank"
-                           hidden$="[[!jobs.name]]">
-                          [[jobs.name]]
-                        </a>
-                      </td>
-                      <td class="progressName">
-                        <template is="dom-if" if="[[_getResults(jobs, 'true', 'in progress')]]">
-                          <div class="progress zuul-job-result">
-                            <div class="progress-bar"
-                              id="progressBar"
-                              role="progressbar"
-                              aria-valuenow$="[[_progressPercent(jobs)]]"
-                              aria-valuemin="0"
-                              aria-valuemax="100"></div>
-                          </div>
-                        </template>
-                        <template is="dom-if" if="[[!_getResults(jobs, 'true', 'in progress')]]">
-                          <span class$="zuul-job-result label [[_renderJobStatusLabel(jobs)]]">
-                            [[_getResults(jobs)]]
-                          </span>
-                        </template>
-                      </td>
-                    </tr>
-                  </template>
+            <table id="changeList">
+              <template is="dom-repeat" items=[[_response]] as="response">
+                <tr class="groupHeader">
+                  <td class="leftPadding">
+                    <template is="dom-if" if="[[!_getFailingReason(response.results.failing_reasons)]]" restamp="true">
+                      <span class="fullStatus success">
+                        <iron-icon id="icon" icon="gr-icons:check" style="color: #388E3C;"></iron-icon>
+                      </span>
+                    </template>
+                    <template is="dom-if" if="[[_getFailingReason(response.results.failing_reasons)]]" restamp="true">
+                      <span class="fullStatus failed">
+                        <iron-icon id="icon" icon="gr-icons:close" style="color: #D32F2F;"></iron-icon>
+                      </span>
+                    </template>
+                  </td>
+                  <td class="cell" colspan="15">[[response.name]]</td>
+                </tr>
+                <template is="dom-repeat" items=[[response.results.jobs]] as="jobs">
+                  <tr class="table">
+                    <td class="leftPadding"></td>
+                    <td class="cell jobName">
+                      <iron-icon id="icon" icon="zuul-icons:code"></iron-icon>
+                      <a href="[[_computeReportURL(jobs)]]" target="_blank"
+                         hidden$="[[!jobs.name]]">
+                        [[jobs.name]]
+                      </a>
+                    </td>
+                    <td class="cell">
+                      <iron-icon id="icon" icon="zuul-icons:query-builder"></iron-icon>
+                      [[_getRemainingTime(response.results.remaining_time)]]
+                    </td>
+                    <td class="cell">
+                      <iron-icon id="icon" icon="zuul-icons:today"></iron-icon>
+                      [[_getEnqueueTime(response.results.enqueue_time)]]
+                    </td>
+                    <td class="cell progressName">
+                      <template is="dom-if" if="[[_getResults(jobs, 'true', 'in progress')]]" restamp="true">
+                        <div class="progress zuul-job-result">
+                          <div class="progress-bar"
+                            id="progressBar"
+                            role="progressbar"
+                            aria-valuenow$="[[_progressPercent(jobs)]]"
+                            aria-valuemin="0"
+                            aria-valuemax="100"></div>
+                        </div>
+                      </template>
+                      <template is="dom-if" if="[[!_getResults(jobs, 'true', 'in progress')]]" restamp="true">
+                        <span class$="zuul-job-result label [[_renderJobStatusLabel(jobs)]]">
+                          [[_getResults(jobs)]]
+                        </span>
+                      </template>
+                    </td>
+                  </tr>
                 </template>
-              </tbody>
+              </template>
             </table>
           </div>
         </template>
