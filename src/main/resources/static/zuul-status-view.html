@@ -14,6 +14,7 @@ limitations under the License.
 
 <dom-module id="zuul-status-view">
   <template>
+    <style include="shared-styles"></style>
     <style>
       #view-container {
         display: block;
@@ -69,33 +70,6 @@ limitations under the License.
       #progressBar {
         width: var(--progress-bar-width, 0%);
       }
-      .genericList th {
-        white-space: nowrap;
-      }
-      .genericList th,
-      .genericList td {
-        padding-right: 1rem;
-      }
-      .genericList tr th:first-of-type,
-      .genericList tr td:first-of-type {
-        padding-left: 1rem;
-      }
-      .genericList td {
-        flex-shrink: 0;
-      }
-      .genericList .topHeader {
-        color: var(--primary-text-color);
-        font-weight: var(--font-weight-bold);
-        text-align: left;
-        vertical-align: middle
-      }
-      .genericList a {
-        color: var(--primary-text-color);
-        text-decoration: none;
-      }
-      .genericList a:hover {
-        text-decoration: underline;
-      }
       #list {
         padding-bottom: 1em;
       }
@@ -132,6 +106,21 @@ limitations under the License.
       .label-warning {
         background-color: #f0ad4e;
       }
+      a {
+        color: var(--primary-text-color);
+        cursor: pointer;
+        display: inline-block;
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+    </style>
+    <style include="gr-change-list-styles">
+      #changeList {
+        border-collapse: collapse;
+        width: 100%;
+      }
     </style>
     <template is="dom-if" if="[[zuulUrl]]">
       <div id="view-container">
@@ -150,46 +139,41 @@ limitations under the License.
         </div>
         <template is="dom-if" if="[[!zuulDisable]]" restamp="true">
           <div class="bottom container">
-            <table id="list" class="genericList">
-              <tr class="headerRow">
-                <th class="pipeline topHeader">Pipeline</th>
-                <th class="jobName topHeader">Job Name</th>
-                <th class="progressName topHeader">Progress</th>
-              </tr>
-              <tbody>
-                <template is="dom-repeat" items=[[_response]] as="response">
-                  <template is="dom-repeat" items=[[response.jobs]] as="jobs">
-                    <tr class="table">
-                      <td class="pipeline">
-                        [[jobs.pipeline]]
-                      </td>
-                      <td class="jobName">
-                        <a href="[[_computeReportURL(jobs)]]" target="_blank"
-                           hidden$="[[!jobs.name]]">
-                          [[jobs.name]]
-                        </a>
-                      </td>
-                      <td class="progressName">
-                        <template is="dom-if" if="[[_getResults(jobs, 'true', 'in progress')]]">
-                          <div class="progress zuul-job-result">
-                            <div class="progress-bar"
-                              id="progressBar"
-                              role="progressbar"
-                              aria-valuenow$="[[_progressPercent(jobs)]]"
-                              aria-valuemin="0"
-                              aria-valuemax="100"></div>
-                          </div>
-                        </template>
-                        <template is="dom-if" if="[[!_getResults(jobs, 'true', 'in progress')]]">
-                          <span class$="zuul-job-result label [[_renderJobStatusLabel(jobs)]]">
-                            [[_getResults(jobs)]]
-                          </span>
-                        </template>
-                      </td>
-                    </tr>
-                  </template>
+            <table id="changeList">
+              <template is="dom-repeat" items=[[_response]] as="response">
+                <template is="dom-repeat" items=[[response.jobs]] as="jobs">
+                  <tr class="groupHeader">
+                    <td class="leftPadding"></td>
+                    <td class="cell" colspan="15">[[jobs.pipeline]]</td>
+                  </tr>
+                  <tr class="table">
+                    <td class="leftPadding"></td>
+                    <td class="cell jobName">
+                      <a href="[[_computeReportURL(jobs)]]" target="_blank"
+                         hidden$="[[!jobs.name]]">
+                        [[jobs.name]]
+                      </a>
+                    </td>
+                    <td class="cell progressName">
+                      <template is="dom-if" if="[[_getResults(jobs, 'true', 'in progress')]]">
+                        <div class="progress zuul-job-result">
+                          <div class="progress-bar"
+                            id="progressBar"
+                            role="progressbar"
+                            aria-valuenow$="[[_progressPercent(jobs)]]"
+                            aria-valuemin="0"
+                            aria-valuemax="100"></div>
+                        </div>
+                      </template>
+                      <template is="dom-if" if="[[!_getResults(jobs, 'true', 'in progress')]]">
+                        <span class$="zuul-job-result label [[_renderJobStatusLabel(jobs)]]">
+                          [[_getResults(jobs)]]
+                        </span>
+                      </template>
+                    </td>
+                  </tr>
                 </template>
-              </tbody>
+              </template>
             </table>
           </div>
         </template>
