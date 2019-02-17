@@ -156,18 +156,16 @@
     /**
      * Fetch current progress state and update properties.
      *
-     * If not all Tricium analyzers are finished yet, this will
-     * set a timeout to update again later.
-     *
-     * It is assumed that this will only be called if the Tricium
-     * host is configured.
-     *
      * @return {Promise} Resolves upon completion.
      */
     async _update() {
       try {
         const response = await this.getZuulStatus(this.change, this.revision);
-        this._response = response;
+        this._response = response.map((results, i) => ({
+          name: results.jobs[i].pipeline,
+          results,
+        }));
+        console.log(this._response);
         this._updateIntervalMs = DEFAULT_UPDATE_INTERVAL_MS;
       } catch (err) {
         this._updateIntervalMs = Math.min(
@@ -205,7 +203,7 @@
      */
     async _getReponse(change, revision) {
       const url = this.zuulTenant === null ?
-        `${this.zuulUrl}${change._number},${revision._number}` :
+        'http://gerrit.new/json4.json' :
         `${this.zuulUrl}/api/tenant/${this.zuulTenant}/status/change/${change._number},${revision._number}`;
       const options = {method: 'GET'};
 
@@ -351,6 +349,68 @@
       this._storage.removeItem('disable_zuul_status');
 
       this.reload();
+    },
+
+    _getFailingReason(reason) {
+      if (reason.length !== 0) {
+        return true;
+      }
+
+      return false;
+    },
+
+    _getTime(ms, words) {
+      if (typeof (words) === 'undefined') {
+        words = false;
+      }
+      let seconds = (+ms) / 1000;
+      let minutes = Math.floor(seconds / 60);
+      let hours = Math.floor(minutes / 60);
+      seconds = Math.floor(seconds % 60);
+      minutes = Math.floor(minutes % 60);
+      let r = '';
+      if (words) {
+        if (hours) {
+          r += hours;
+          r += ' hr ';
+        }
+        r += minutes + ' min';
+      } else {
+        if (hours < 10) {
+          r += '0';
+        }
+        r += hours + ':';
+        if (minutes < 10) {
+          r += '0';
+        }
+        r += minutes + ':';
+        if (seconds < 10) {
+          r += '0';
+        }
+        r += seconds;
+      }
+
+      return r;
+    },
+
+    _getRemainingTime(time) {
+      let remainingTime
+      if (time === null) {
+        remainingTime = 'unknown';
+      } else {
+        remainingTime = this._getTime(time, true);
+      }
+
+      return remainingTime;
+    },
+
+    _getEnqueueTime(ms) {
+      // Special format case for enqueue time to add style
+      let hours = 60 * 60 * 1000;
+      let now = Date.now();
+      let delta = now - ms;
+
+      return this._getTime(delta, true);
     },
   });
 })();
