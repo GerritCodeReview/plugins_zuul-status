@@ -113,7 +113,7 @@
      * @return {Promise} Resolves upon completion.
      */
     async reload() {
-      this._response = null;
+      this._response = [];
       this._startTime = new Date();
 
       if (this._storage.getItem('disable_zuul_status')) {
@@ -167,7 +167,12 @@
     async _update() {
       try {
         const response = await this.getZuulStatus(this.change, this.revision);
-        this._response = response;
+        this._response = response.map((results, i) => ({
+          name: results.jobs[i].pipeline,
+          results,
+        }));
+        console.log(this._response);
+        //this._response = response;
         this._updateIntervalMs = DEFAULT_UPDATE_INTERVAL_MS;
       } catch (err) {
         this._updateIntervalMs = Math.min(
@@ -205,7 +210,7 @@
      */
     async _getReponse(change, revision) {
       const url = this.zuulTenant === null ?
-        `${this.zuulUrl}${change._number},${revision._number}` :
+        'http://gerrit.new/json4.json' :
         `${this.zuulUrl}/api/tenant/${this.zuulTenant}/status/change/${change._number},${revision._number}`;
       const options = {method: 'GET'};
 
@@ -352,5 +357,14 @@
 
       this.reload();
     },
+    
+    _test(jobs) {
+      if (!jobs) { return []; }
+      const job = jobs.map((job, idx) => {
+        console.log(job);
+        console.log(idx);
+      });
+      return jobs;
+    }
   });
 })();
