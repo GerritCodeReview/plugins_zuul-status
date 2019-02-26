@@ -95,12 +95,39 @@
       }
     },
 
-    attached() {
+    async attached() {
       this.listen(document, 'visibilitychange', '_handleVisibilityChange');
-      if (!this.change || !this.revision) {
-        console.warn('element attached without change and revision set.');
+      if (!this.change || !this.revision || !this.plugin) {
+        console.warn('element attached without change, revision or plugin set.');
         return;
       }
+
+      const project = this.change.project;
+      const plugin = this.plugin.getPluginName();
+      const config = await this.getConfig(project, plugin);
+      if (config && config.zuul_url) {
+        this.zuulUrl = config.zuul_url;
+        if (config.zuul_tenant) {
+          this.zuulTenant = config.zuul_tenant;
+          console.info(`zuul-status: Zuul v3 at ${this.zuulUrl}, tenant ${this.zuulTenant}`);
+        } else {
+          console.info(`zuul-status: Zuul v2 at ${this.zuulUrl}`);
+        }
+      } else {
+        console.info("No config found for plugin zuul-status");
+      }
+    },
+
+    /**
+     * Fetch the config for this plugin
+     *
+     * @return {Promise} Resolves to the fetched config object,
+     *     or rejects if the response is non-OK.
+     */
+    async getConfig(project, plugin) {
+      return this.plugin.restApi().get(
+              `/projects/${encodeURIComponent(project)}` +
+              `/${encodeURIComponent(plugin)}~config`);
     },
 
     detached() {
@@ -122,35 +149,9 @@
         this.set('zuulDisable', false);
       }
 
-      const project = this.change.project;
-      const plugin = this.plugin.getPluginName();
-      const config = await this.getConfig(project, plugin);
-      if (config && config.zuul_url) {
-        this.zuulUrl = config.zuul_url;
-        if (config.zuul_tenant) {
-          this.zuulTenant = config.zuul_tenant;
-          console.info(`zuul-status: Zuul v3 at ${this.zuulUrl}, tenant ${this.zuulTenant}`);
-        } else {
-          console.info(`zuul-status: Zuul v2 at ${this.zuulUrl}`);
-        }
-      } else {
-        console.info("No config found for plugin zuul-status");
-      }
       if (this.zuulUrl) {
         await this._update();
       }
-    },
-
-    /**
-     * Fetch the config for this plugin
-     *
-     * @return {Promise} Resolves to the fetched config object,
-     *     or rejects if the response is non-OK.
-     */
-    async getConfig(project, plugin) {
-      return await this.plugin.restApi().get(
-              `/projects/${encodeURIComponent(project)}` +
-              `/${encodeURIComponent(plugin)}~config`);
     },
 
     /**
@@ -266,8 +267,10 @@
     _computeReportURL(response) {
 
       if (this.zuulTenant) {
-        // Zuul v3 live streaming URL has to be checked early because `report_url` always contains at least a placeholder
-        if (response && response.result == null && response.url && response.url.startsWith('stream/')) {
+        // Zuul v3 live streaming URL has to be checked early because `report_url`
+        // always contains at least a placeholder
+        if (response && response.result == null &&
+            response.url && response.url.startsWith('stream/')) {
           return `${this.zuulUrl}/t/${this.zuulTenant}/${response.url}`;
         }
       }
@@ -284,7 +287,7 @@
           return '';
       }
 
-      let progressPercent = 100 * (jobs.elapsed_time / (jobs.elapsed_time +
+      const progressPercent = 100 * (jobs.elapsed_time / (jobs.elapsed_time +
           jobs.remaining_time));
 
       this.customStyle['--progress-bar-width'] = `${progressPercent}%;`;
@@ -294,14 +297,14 @@
     },
 
     _getResults(jobs, equals, name) {
-      let result = jobs.result ? jobs.result.toLowerCase() : null;
+      let result = jobs && jobs.result ? jobs.result.toLowerCase() : null;
       if (result === null) {
         if (jobs.url === null) {
-          result = 'queued'
+          result = 'queued';
         } else if (jobs.paused !== null && jobs.paused) {
-          result = 'paused'
+          result = 'paused';
         } else {
-          result = 'in progress'
+          result = 'in progress';
         }
       }
 
@@ -313,26 +316,26 @@
     },
 
     _renderJobStatusLabel (jobs) {
-      let result = jobs.result ? jobs.result.toLowerCase() : null;
+      let result = jobs && jobs.result ? jobs.result.toLowerCase() : null;
 
       let className;
 
       switch (result) {
         case 'success':
-          className = 'label-success'
+          className = 'label-success';
           break;
         case 'failure':
-          className = 'label-danger'
+          className = 'label-danger';
           break;
         case 'unstable':
-          className = 'label-warning'
+          className = 'label-warning';
           break;
         case 'skipped':
-          className = 'label-info'
+          className = 'label-info';
           break;
         // 'in progress' 'queued' 'lost' 'aborted' ...
         default:
-          className = 'label-default'
+          className = 'label-default';
       }
 
       return className;
