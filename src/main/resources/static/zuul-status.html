@@ -15,15 +15,15 @@ limitations under the License.
 <link rel="import" href="zuul-status-view.html">
 
 <script>
-(function() {
-  'use strict';
+  (function() {
+    'use strict';
 
-  Gerrit.install((plugin) => {
-  	// Only supported in PolyGerrit in gerrit 2.16+.
-    if (!window.Polymer) { return; }
+    Gerrit.install((plugin) => {
+      // Only supported in PolyGerrit from gerrit 2.16+.
+      if (!window.Polymer) { return; }
 
-    plugin.registerCustomComponent(
-        'change-view-integration', 'zuul-status-view');
-  });
-})();
+      plugin.registerCustomComponent(
+          'change-view-integration', 'zuul-status-view');
+    });
+  })();
 </script>
