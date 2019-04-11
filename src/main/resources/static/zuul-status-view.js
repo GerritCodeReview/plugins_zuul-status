@@ -60,6 +60,8 @@
 
   Polymer({
     is: 'zuul-status-view',
+    _legacyUndefinedCheck: true,
+
     properties: {
       zuulUrl: String,
       zuulTenant: {
@@ -399,7 +401,6 @@
 
     _getEnqueueTime(ms) {
       // Special format case for enqueue time to add style
-      let hours = 60 * 60 * 1000;
       let now = Date.now();
       let delta = now - ms;
 
