@@ -60,6 +60,8 @@
 
   Polymer({
     is: 'zuul-status-view',
+    _legacyUndefinedCheck: true,
+
     properties: {
       zuulUrl: String,
       zuulTenant: {
