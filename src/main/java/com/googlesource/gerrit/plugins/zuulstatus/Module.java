@@ -19,25 +19,20 @@ import static com.google.gerrit.server.project.ProjectResource.PROJECT_KIND;
 import com.google.gerrit.extensions.annotations.Exports;
 import com.google.gerrit.extensions.registration.DynamicSet;
 import com.google.gerrit.extensions.restapi.RestApiModule;
-import com.google.gerrit.extensions.webui.JavaScriptPlugin;
-import com.google.gerrit.extensions.webui.WebUiPlugin;
 import com.google.gerrit.server.config.ProjectConfigEntry;
 
 public class Module extends RestApiModule {
   @Override
   protected void configure() {
-    DynamicSet.bind(binder(), WebUiPlugin.class)
-        .toInstance(new JavaScriptPlugin("zuul-status.html"));
-
     get(PROJECT_KIND, "config").to(GetConfig.class);
 
     // TODO: these annotations only apply to GWT UIs...
     bind(ProjectConfigEntry.class)
-	.annotatedWith(Exports.named("url"))
-	.toInstance(new ProjectConfigEntry("Top-level Zuul URL", null));
+        .annotatedWith(Exports.named("url"))
+        .toInstance(new ProjectConfigEntry("Top-level Zuul URL", null));
 
     bind(ProjectConfigEntry.class)
-	.annotatedWith(Exports.named("tenant"))
-	.toInstance(new ProjectConfigEntry("Zuul v3 tenant name -- leave empty on Zuul v2", null));
+        .annotatedWith(Exports.named("tenant"))
+        .toInstance(new ProjectConfigEntry("Zuul v3 tenant name -- leave empty on Zuul v2", null));
   }
 }
