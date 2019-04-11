@@ -1,4 +1,5 @@
 load("//tools/bzl:plugin.bzl", "gerrit_plugin")
+load("//tools/bzl:genrule2.bzl", "genrule2")
 load("//tools/bzl:js.bzl", "polygerrit_plugin")
 
 gerrit_plugin(
@@ -12,13 +13,26 @@ gerrit_plugin(
         "Implementation-Vendor: Wikimedia Foundation",
     ],
     resources = glob(["src/main/**/*"]),
+    resource_jars = [":gr-zuul-status-static"],
+)
+
+genrule2(
+    name = "gr-zuul-status-static",
+    srcs = [":gr-zuul-status"],
+    outs = ["gr-zuul-status-static.jar"],
+    cmd = " && ".join([
+        "mkdir $$TMP/static",
+        "cp -r $(locations :gr-zuul-status) $$TMP/static",
+        "cd $$TMP",
+        "zip -Drq $$ROOT/$@ -g .",
+    ]),
 )
 
 polygerrit_plugin(
-    name = "zuul_status_ui",
+    name = "gr-zuul-status",
     srcs = glob([
-        "src/main/resources/static/*.html",
-        "src/main/resources/static/*.js",
+        "gr-zuul-status-view/*.html",
+        "gr-zuul-status-view/*.js",
     ]),
-    app = "src/main/resources/static/zuul-status.html",
+    app = "plugin.html",
 )

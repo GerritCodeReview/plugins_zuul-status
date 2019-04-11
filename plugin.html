@@ -12,18 +12,19 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 
-<link rel="import" href="zuul-status-view.html">
+<link rel="import" href="./gr-zuul-status-view/gr-zuul-status-view.html">
 
 <script>
-(function() {
-  'use strict';
+  (function() {
+    'use strict';
 
-  Gerrit.install((plugin) => {
-  	// Only supported in PolyGerrit in gerrit 2.16+.
-    if (!window.Polymer) { return; }
+    // This plugin is only supported in PolyGerrit from gerrit 2.16+
+    if (window.Polymer) {
+      Gerrit.install((plugin) => {
 
-    plugin.registerCustomComponent(
-        'change-view-integration', 'zuul-status-view');
-  });
-})();
+        plugin.registerCustomComponent(
+            'change-view-integration', 'gr-zuul-status-view');
+      });
+    }
+  })();
 </script>
