@@ -7,7 +7,6 @@ gerrit_plugin(
     manifest_entries = [
         "Gerrit-PluginName: zuul-status",
         "Gerrit-Module: com.googlesource.gerrit.plugins.zuulstatus.Module",
-        "Gerrit-HttpModule: com.googlesource.gerrit.plugins.zuulstatus.HttpModule",
         "Implementation-Title: Zuul status plugin",
         "Implementation-Vendor: Wikimedia Foundation",
     ],
