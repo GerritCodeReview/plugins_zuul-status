@@ -114,7 +114,7 @@
      *
      * @return {Promise} Resolves upon completion.
      */
-    async reload() {
+    reload() {
       this._response = null;
       this._startTime = new Date();
 
@@ -126,7 +126,7 @@
 
       const project = this.change.project;
       const plugin = this.plugin.getPluginName();
-      const config = await this.getConfig(project, plugin);
+      const config = this.getConfig(project, plugin);
       if (config && config.zuul_url) {
         this.zuulUrl = config.zuul_url;
         if (config.zuul_tenant) {
@@ -139,7 +139,7 @@
         console.info("No config found for plugin zuul-status");
       }
       if (this.zuulUrl) {
-        await this._update();
+        this._update();
       }
     },
 
@@ -149,8 +149,8 @@
      * @return {Promise} Resolves to the fetched config object,
      *     or rejects if the response is non-OK.
      */
-    async getConfig(project, plugin) {
-      return await this.plugin.restApi().get(
+    getConfig(project, plugin) {
+      return this.plugin.restApi().get(
               `/projects/${encodeURIComponent(project)}` +
               `/${encodeURIComponent(plugin)}~config`);
     },
@@ -160,9 +160,9 @@
      *
      * @return {Promise} Resolves upon completion.
      */
-    async _update() {
+    _update() {
       try {
-        const response = await this.getZuulStatus(this.change, this.revision);
+        const response = this.getZuulStatus(this.change, this.revision);
         this._response = response.map((results, i) => ({
           name: results.jobs[i].pipeline,
           results,
@@ -184,12 +184,12 @@
      * @param {RevisionInfo} revision The current patchset.
      * @return {Promise} Resolves to a fetch Response object.
      */
-    async getZuulStatus(change, revision) {
-      const response = await this._getReponse(change, revision);
+    getZuulStatus(change, revision) {
+      const response = this._getReponse(change, revision);
 
       if (response && response.status && response.status === 200) {
-        const text = await response.text();
-        return await JSON.parse(text);
+        const text = response.text();
+        return JSON.parse(text);
       }
 
       return [];
@@ -202,13 +202,13 @@
      * @param {RevisionInfo} revision The current patchset.
      * @return {Promise} Resolves to a fetch Response object.
      */
-    async _getReponse(change, revision) {
+    _getReponse(change, revision) {
       const url = this.zuulTenant === null ?
         `${this.zuulUrl}${change._number},${revision._number}` :
         `${this.zuulUrl}/api/tenant/${this.zuulTenant}/status/change/${change._number},${revision._number}`;
       const options = {method: 'GET'};
 
-      return await fetch(url, options);
+      return fetch(url, options);
     },
 
     /**
