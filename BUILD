@@ -28,7 +28,7 @@ genrule2(
 )
 
 polygerrit_plugin(
-    name = "gr-zuul-status",
+    name = "zuul-status",
     srcs = glob([
         "gr-zuul-status-view/*.html",
         "gr-zuul-status-view/*.js",
