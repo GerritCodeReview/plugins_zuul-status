@@ -59,7 +59,7 @@
   }
 
   Polymer({
-    is: 'gr-zuul-status-view',
+    is: 'zuul-status-view',
     _legacyUndefinedCheck: true,
 
     properties: {
