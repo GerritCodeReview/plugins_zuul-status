@@ -114,33 +114,35 @@
      *
      * @return {Promise} Resolves upon completion.
      */
-    async reload() {
-      this._response = null;
-      this._startTime = new Date();
+    reload() {
+      return new Promise((resolve, reject) => {
+        this._response = null;
+        this._startTime = new Date();
 
-      if (this._storage.getItem('disable_zuul_status')) {
-        this.set('zuulDisable', true);
-      } else {
-        this.set('zuulDisable', false);
-      }
-
-      const project = this.change.project;
-      const plugin = this.plugin.getPluginName();
-      const config = await this.getConfig(project, plugin);
-      if (config && config.zuul_url) {
-        this.zuulUrl = config.zuul_url;
-        if (config.zuul_tenant) {
-          this.zuulTenant = config.zuul_tenant;
-          console.info(`zuul-status: Zuul v3 at ${this.zuulUrl}, tenant ${this.zuulTenant}`);
+        if (this._storage.getItem('disable_zuul_status')) {
+          this.set('zuulDisable', true);
         } else {
-          console.info(`zuul-status: Zuul v2 at ${this.zuulUrl}`);
+          this.set('zuulDisable', false);
         }
-      } else {
-        console.info("No config found for plugin zuul-status");
-      }
-      if (this.zuulUrl) {
-        await this._update();
-      }
+
+        const project = this.change.project;
+        const plugin = this.plugin.getPluginName();
+        const config = resolve(this.getConfig(project, plugin));
+        if (config && config.zuul_url) {
+          this.zuulUrl = config.zuul_url;
+          if (config.zuul_tenant) {
+            this.zuulTenant = config.zuul_tenant;
+            console.info(`zuul-status: Zuul v3 at ${this.zuulUrl}, tenant ${this.zuulTenant}`);
+          } else {
+            console.info(`zuul-status: Zuul v2 at ${this.zuulUrl}`);
+          }
+        } else {
+          console.info("No config found for plugin zuul-status");
+        }
+        if (this.zuulUrl) {
+          resolve(this._update());
+        }
+      });
     },
 
     /**
@@ -149,10 +151,12 @@
      * @return {Promise} Resolves to the fetched config object,
      *     or rejects if the response is non-OK.
      */
-    async getConfig(project, plugin) {
-      return await this.plugin.restApi().get(
-              `/projects/${encodeURIComponent(project)}` +
-              `/${encodeURIComponent(plugin)}~config`);
+    getConfig(project, plugin) {
+      return new Promise((resolve, reject) => {
+        return resolve(this.plugin.restApi().get(
+                `/projects/${encodeURIComponent(project)}` +
+                `/${encodeURIComponent(plugin)}~config`));
+      });
     },
 
     /**
@@ -160,21 +164,23 @@
      *
      * @return {Promise} Resolves upon completion.
      */
-    async _update() {
-      try {
-        const response = await this.getZuulStatus(this.change, this.revision);
-        this._response = response.map((results, i) => ({
-          name: results.jobs[i].pipeline,
-          results,
-        }));
-        this._updateIntervalMs = DEFAULT_UPDATE_INTERVAL_MS;
-      } catch (err) {
-        this._updateIntervalMs = Math.min(
-            MAX_UPDATE_INTERVAL_MS,
-            (1 + Math.random()) * this._updateIntervalMs * 2);
-        console.warn(err);
-      }
-      this._resetTimeout();
+    _update() {
+      return new Promise((resolve, reject) => {
+        try {
+          const response = resolve(this.getZuulStatus(this.change, this.revision));
+          this._response = response.map((results, i) => ({
+            name: results.jobs[i].pipeline,
+            results,
+          }));
+          this._updateIntervalMs = DEFAULT_UPDATE_INTERVAL_MS;
+        } catch (err) {
+          this._updateIntervalMs = Math.min(
+              MAX_UPDATE_INTERVAL_MS,
+              (1 + Math.random()) * this._updateIntervalMs * 2);
+          console.warn(err);
+        }
+        this._resetTimeout();
+      });
     },
 
     /**
@@ -184,15 +190,17 @@
      * @param {RevisionInfo} revision The current patchset.
      * @return {Promise} Resolves to a fetch Response object.
      */
-    async getZuulStatus(change, revision) {
-      const response = await this._getReponse(change, revision);
+    getZuulStatus(change, revision) {
+      return new Promise((resolve, reject) => {
+        const response = resolve(this._getReponse(change, revision));
 
-      if (response && response.status && response.status === 200) {
-        const text = await response.text();
-        return await JSON.parse(text);
-      }
+        if (response && response.status && response.status === 200) {
+          const text = resolve(response.text());
+          return resolve(JSON.parse(text));
+        }
 
-      return [];
+        return [];
+      });
     },
 
     /**
@@ -203,12 +211,14 @@
      * @return {Promise} Resolves to a fetch Response object.
      */
     async _getReponse(change, revision) {
-      const url = this.zuulTenant === null ?
-        `${this.zuulUrl}${change._number},${revision._number}` :
-        `${this.zuulUrl}/api/tenant/${this.zuulTenant}/status/change/${change._number},${revision._number}`;
-      const options = {method: 'GET'};
+      return new Promise((resolve, reject) => {
+        const url = this.zuulTenant === null ?
+          `${this.zuulUrl}${change._number},${revision._number}` :
+          `${this.zuulUrl}/api/tenant/${this.zuulTenant}/status/change/${change._number},${revision._number}`;
+        const options = {method: 'GET'};
 
-      return await fetch(url, options);
+        return resolve(fetch(url, options));
+      });
     },
 
     /**
