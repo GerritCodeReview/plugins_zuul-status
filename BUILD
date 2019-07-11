@@ -12,26 +12,26 @@ gerrit_plugin(
         "Implementation-Vendor: Wikimedia Foundation",
     ],
     resources = glob(["src/main/**/*"]),
-    resource_jars = [":gr-zuul-status-static"],
+    resource_jars = [":zuul-status-ui-static"],
 )
 
 genrule2(
-    name = "gr-zuul-status-static",
-    srcs = [":gr-zuul-status"],
-    outs = ["gr-zuul-status-static.jar"],
+    name = "zuul-status-ui-static",
+    srcs = [":zuul-status-ui"],
+    outs = ["zuul-status-ui-static.jar"],
     cmd = " && ".join([
         "mkdir $$TMP/static",
-        "cp -r $(locations :gr-zuul-status) $$TMP/static",
+        "cp -r $(locations :zuul-status-ui) $$TMP/static",
         "cd $$TMP",
         "zip -Drq $$ROOT/$@ -g .",
     ]),
 )
 
 polygerrit_plugin(
-    name = "gr-zuul-status",
+    name = "zuul-status-ui",
     srcs = glob([
-        "gr-zuul-status-view/*.html",
-        "gr-zuul-status-view/*.js",
+        "zuul-status/*.html",
+        "zuul-status/*.js",
     ]),
-    app = "plugin.html",
+    app = "zuul-status/zuul-status.html",
 )
