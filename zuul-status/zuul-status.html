@@ -12,7 +12,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 
-<link rel="import" href="./gr-zuul-status-view/gr-zuul-status-view.html">
+<link rel="import" href="./zuul-status-view.html">
 
 <script>
   (function() {
@@ -23,7 +23,7 @@ limitations under the License.
       Gerrit.install((plugin) => {
 
         plugin.registerCustomComponent(
-            'change-view-integration', 'gr-zuul-status-view');
+            'change-view-integration', 'zuul-status-view');
       });
     }
   })();
