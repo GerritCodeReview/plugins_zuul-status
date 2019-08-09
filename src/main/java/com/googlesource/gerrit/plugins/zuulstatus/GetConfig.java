@@ -15,6 +15,7 @@
 package com.googlesource.gerrit.plugins.zuulstatus;
 
 import com.google.gerrit.extensions.annotations.PluginName;
+import com.google.gerrit.extensions.restapi.Response;
 import com.google.gerrit.extensions.restapi.RestReadView;
 import com.google.gerrit.server.config.PluginConfig;
 import com.google.gerrit.server.config.PluginConfigFactory;
@@ -36,14 +37,14 @@ public class GetConfig implements RestReadView<ProjectResource> {
   }
 
   @Override
-  public ConfigInfo apply(ProjectResource project) throws NoSuchProjectException {
+  public Response<ConfigInfo> apply(ProjectResource project) throws NoSuchProjectException {
     PluginConfig cfg = config.getFromProjectConfigWithInheritance(
         project.getNameKey(), pluginName);
 
     ConfigInfo info = new ConfigInfo();
     info.zuulUrl = cfg.getString("url", null);
     info.zuulTenant = cfg.getString("tenant", null);
-    return info;
+    return Response.ok(info);
   }
 
   public static class ConfigInfo {
