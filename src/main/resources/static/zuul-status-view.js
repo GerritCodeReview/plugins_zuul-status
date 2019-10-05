@@ -185,8 +185,6 @@
      * @return {Promise} Resolves to a fetch Response object.
      */
     async getZuulStatus(change, revision) {
-      if (!change || !revision) return [];
-
       const response = await this._getReponse(change, revision);
 
       if (response && response.status && response.status === 200) {
