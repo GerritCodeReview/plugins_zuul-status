@@ -205,6 +205,8 @@
      * @return {Promise} Resolves to a fetch Response object.
      */
     async _getReponse(change, revision) {
+      if (!change || !revision) return false;
+
       const url = this.zuulTenant === null ?
         `${this.zuulUrl}${change._number},${revision._number}` :
         `${this.zuulUrl}/api/tenant/${this.zuulTenant}/status/change/${change._number},${revision._number}`;
