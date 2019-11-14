@@ -91,7 +91,7 @@
         type: Object,
         value: new ZuulSiteBasedStorage(),
       },
-      zuulDisable: {
+      zuulEnable: {
         type: Boolean,
         value: false,
       }
@@ -118,10 +118,10 @@
       this._response = null;
       this._startTime = new Date();
 
-      if (this._storage.getItem('disable_zuul_status')) {
-        this.set('zuulDisable', true);
+      if (this._storage.getItem('enable_zuul_status')) {
+        this.set('zuulEnable', true);
       } else {
-        this.set('zuulDisable', false);
+        this.set('zuulEnable', false);
       }
 
       const project = this.change.project;
@@ -340,14 +340,14 @@
       return className;
     },
 
-    _handleDisableZuulStatus(e) {
-      this._storage.setItem('disable_zuul_status', 'yes');
+    _handleEnableZuulStatus(e) {
+      this._storage.setItem('enable_zuul_status', 'true');
 
       this.reload();
     },
 
-    _handleEnableZuulStatus(e) {
-      this._storage.removeItem('disable_zuul_status');
+    _handleDisableZuulStatus(e) {
+      this._storage.removeItem('enable_zuul_status');
 
       this.reload();
     },

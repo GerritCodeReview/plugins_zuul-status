@@ -139,15 +139,15 @@ limitations under the License.
             <h3 class="labelName">[[_computeTitle(_response)]]</h3>
           </div>
           <div class="container">
-            <template is="dom-if" if="[[!zuulDisable]]" restamp="true">
-              <gr-button link on-tap="_handleDisableZuulStatus">Disable Zuul Status</gr-button>
-            </template>
-            <template is="dom-if" if="[[zuulDisable]]" restamp="true">
+            <template is="dom-if" if="[[!zuulEnable]]" restamp="true">
               <gr-button link on-tap="_handleEnableZuulStatus">Enable Zuul Status</gr-button>
+            </template>
+            <template is="dom-if" if="[[zuulEnable]]" restamp="true">
+              <gr-button link on-tap="_handleDisableZuulStatus">Disable Zuul Status</gr-button>
             </template>
           </div>
         </div>
-        <template is="dom-if" if="[[!zuulDisable]]" restamp="true">
+        <template is="dom-if" if="[[zuulEnable]]" restamp="true">
           <div class="bottom container">
             <table id="changeList">
               <template is="dom-repeat" items=[[_response]] as="response">
