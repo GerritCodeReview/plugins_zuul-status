@@ -27,7 +27,7 @@ public class Module extends RestApiModule {
   @Override
   protected void configure() {
     DynamicSet.bind(binder(), WebUiPlugin.class)
-        .toInstance(new JavaScriptPlugin("zuul-status.html"));
+        .toInstance(new JavaScriptPlugin("zuul-status.js"));
 
     get(PROJECT_KIND, "config").to(GetConfig.class);
 
