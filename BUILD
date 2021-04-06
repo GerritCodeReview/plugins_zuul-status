@@ -19,5 +19,5 @@ polygerrit_plugin(
         "zuul-status/*.html",
         "zuul-status/*.js",
     ]),
-    app = "zuul-status/zuul-status.html",
+    app = "zuul-status/plugin.js",
 )
