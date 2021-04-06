@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d9cf2891_ea06edbd",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1029953
+      },
+      "writtenOn": "2021-04-06T19:48:17Z",
+      "side": 1,
+      "message": "@Ben i\u0027m wondering if you know why reload() isn\u0027t working anymore? Did under polymer 1 (and when i last tried this).",
+      "revId": "8c7796452b9229c969cde140a495859bddfc62aa",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    }
+  ]
+}
