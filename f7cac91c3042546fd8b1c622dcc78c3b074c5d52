@@ -16,6 +16,41 @@
       "message": "@Ben i\u0027ve got this partially working now... but \"this.updateStyles({\u0027--progress-bar-width\u0027: `${progressPercent}%;`});\" Doesn\u0027t seem to work. Any ideas? (as in the progress bar no longer works).",
       "revId": "f7cac91c3042546fd8b1c622dcc78c3b074c5d52",
       "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7bee83c2_0deece75",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 9
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1013302
+      },
+      "writtenOn": "2021-04-07T07:57:44Z",
+      "side": 1,
+      "message": "Thanks for working on Polymer 3 migration! Much appreciated.",
+      "revId": "f7cac91c3042546fd8b1c622dcc78c3b074c5d52",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "887fc31a_c445a3cd",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 9
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1013302
+      },
+      "writtenOn": "2021-04-07T07:57:44Z",
+      "side": 1,
+      "message": "Maybe try removing the semi-colon. I have no better idea. :-/",
+      "parentUuid": "4b9808c3_7ac5aabd",
+      "revId": "f7cac91c3042546fd8b1c622dcc78c3b074c5d52",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
     }
   ]
 }
