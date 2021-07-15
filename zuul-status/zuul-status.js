@@ -155,7 +155,7 @@ class ZuulStatus extends Polymer.Element {
           (1 + Math.random()) * this._updateIntervalMs * 2);
       console.warn(err);
     }
-    this._resetTimeout();
+    await this._resetTimeout();
   }
 
   /**
@@ -197,7 +197,7 @@ class ZuulStatus extends Polymer.Element {
   /**
    * Set a timeout to update again if applicable.
    */
-  _resetTimeout() {
+  async _resetTimeout() {
     this._clearUpdateTimeout();
 
     if (this._response === []) {
@@ -205,7 +205,7 @@ class ZuulStatus extends Polymer.Element {
     }
 
     this._updateTimeoutID = window.setTimeout(
-        this._updateTimeoutFired.bind(this),
+        await this._updateTimeoutFired.bind(this),
         this._updateIntervalMs);
   }
 
