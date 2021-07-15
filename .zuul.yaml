@@ -1,0 +1,10 @@
+- job:
+    name: plugins-depends-on-build
+    parent: gerrit-plugin-build
+    pre-run:
+        tools/playbooks/install_docker.yaml
+
+- project:
+    check:
+      jobs:
+        - plugins-depends-on-build
